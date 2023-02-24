@@ -14,12 +14,9 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@SpringBootTest
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
 
-//    @Autowired
-//    BeerController beerController;
     @Autowired
     MockMvc mockMvc;
 
@@ -32,6 +29,5 @@ class BeerControllerTest {
         mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-//        System.out.println(beerController.getBeerById(UUID.randomUUID()));
     }
 }
