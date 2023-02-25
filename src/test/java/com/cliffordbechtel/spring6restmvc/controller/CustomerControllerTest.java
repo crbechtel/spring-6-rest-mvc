@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -43,6 +44,9 @@ class CustomerControllerTest {
          customerServiceImpl = new CustomerServiceImpl();
     }
 
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
     @Test
     void testDeleteCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().get(0);
@@ -51,7 +55,6 @@ class CustomerControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
         verify(customerService).deleteById(uuidArgumentCaptor.capture());
 
         assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
