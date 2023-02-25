@@ -4,6 +4,7 @@ import com.cliffordbechtel.spring6restmvc.entities.Beer;
 import com.cliffordbechtel.spring6restmvc.mappers.BeerMapper;
 import com.cliffordbechtel.spring6restmvc.model.BeerDTO;
 import com.cliffordbechtel.spring6restmvc.repositories.BeerRepository;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,13 @@ class BeerControllerIT {
 
     @Autowired
     BeerMapper beerMapper;
+
+    @Test
+    void testDeleteByIDNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.deleteById(UUID.randomUUID());
+        });
+    }
 
     @Rollback
     @Transactional
