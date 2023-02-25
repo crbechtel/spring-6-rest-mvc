@@ -1,5 +1,7 @@
 package com.cliffordbechtel.spring6restmvc.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +13,9 @@ import java.util.UUID;
 @Data
 public class BeerDTO {
     private UUID id;
+
+    @NotBlank
+    @NotNull
     private String beerName;
     private Integer version;
     private BeerStyle beerStyle;
