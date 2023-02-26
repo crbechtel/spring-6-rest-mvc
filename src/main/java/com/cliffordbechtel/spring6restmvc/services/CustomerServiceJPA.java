@@ -44,7 +44,6 @@ public class CustomerServiceJPA implements CustomerService {
 
         customerRepository.findById(customerId).ifPresentOrElse(foundCustomer -> {
             foundCustomer.setName(customer.getName());
-            foundCustomer.setUpdateDate(LocalDateTime.now());
             atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(customerRepository.save(foundCustomer))));
         }, () -> {
             atomicReference.set(Optional.empty());
@@ -70,7 +69,6 @@ public class CustomerServiceJPA implements CustomerService {
             if (StringUtils.hasText(customer.getName())) {
                 foundCustomer.setName(customer.getName());
             }
-            foundCustomer.setUpdateDate(LocalDateTime.now());
             atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(customerRepository.save(foundCustomer))));
         }, () -> {
             atomicReference.set(Optional.empty());
