@@ -41,7 +41,7 @@ class CustomerControllerIT {
     @Test
     void testPatchById() {
         Customer customer = customerRepository.findAll().get(0);
-        CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
         customerDTO.setId(null);
         customerDTO.setVersion(null);
         final String customerName = "UPDATED";
@@ -85,7 +85,7 @@ class CustomerControllerIT {
     @Test
     void testUpdateCustomer() {
         Customer customer = customerRepository.findAll().get(0);
-        CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
         customerDTO.setId(null);
         customerDTO.setVersion(null);
         final String customerName = "UPDATED";

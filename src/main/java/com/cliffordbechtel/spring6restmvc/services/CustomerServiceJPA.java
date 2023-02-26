@@ -2,14 +2,12 @@ package com.cliffordbechtel.spring6restmvc.services;
 
 import com.cliffordbechtel.spring6restmvc.mappers.CustomerMapper;
 import com.cliffordbechtel.spring6restmvc.model.CustomerDTO;
-import com.cliffordbechtel.spring6restmvc.model.CustomerDTO;
 import com.cliffordbechtel.spring6restmvc.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,17 +23,17 @@ public class CustomerServiceJPA implements CustomerService {
 
     @Override
     public List<CustomerDTO> listCustomers() {
-        return customerRepository.findAll().stream().map(customerMapper::customerToCustomerDTO).collect(Collectors.toList());
+        return customerRepository.findAll().stream().map(customerMapper::customerToCustomerDto).collect(Collectors.toList());
     }
 
     @Override
     public Optional<CustomerDTO> getCustomerById(UUID id) {
-        return Optional.ofNullable(customerMapper.customerToCustomerDTO(customerRepository.findById(id).orElse(null)));
+        return Optional.ofNullable(customerMapper.customerToCustomerDto(customerRepository.findById(id).orElse(null)));
     }
 
     @Override
     public CustomerDTO saveNewCustomer(CustomerDTO customer) {
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerDtoToCustomer(customer)));
+        return customerMapper.customerToCustomerDto(customerRepository.save(customerMapper.customerDtoToCustomer(customer)));
     }
 
     @Override
@@ -44,7 +42,7 @@ public class CustomerServiceJPA implements CustomerService {
 
         customerRepository.findById(customerId).ifPresentOrElse(foundCustomer -> {
             foundCustomer.setName(customer.getName());
-            atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(customerRepository.save(foundCustomer))));
+            atomicReference.set(Optional.of(customerMapper.customerToCustomerDto(customerRepository.save(foundCustomer))));
         }, () -> {
             atomicReference.set(Optional.empty());
         });
@@ -69,7 +67,7 @@ public class CustomerServiceJPA implements CustomerService {
             if (StringUtils.hasText(customer.getName())) {
                 foundCustomer.setName(customer.getName());
             }
-            atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(customerRepository.save(foundCustomer))));
+            atomicReference.set(Optional.of(customerMapper.customerToCustomerDto(customerRepository.save(foundCustomer))));
         }, () -> {
             atomicReference.set(Optional.empty());
         });
