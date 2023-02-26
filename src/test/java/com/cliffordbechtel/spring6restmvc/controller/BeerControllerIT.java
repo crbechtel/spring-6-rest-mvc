@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -50,6 +49,14 @@ class BeerControllerIT {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
+
+    @Test
+    void testListBeersByName() throws Exception {
+        mockMvc.perform(get(BeerController.BEER_PATH)
+                .queryParam("beerName", "IPA"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(100)));
     }
 
     @Test
