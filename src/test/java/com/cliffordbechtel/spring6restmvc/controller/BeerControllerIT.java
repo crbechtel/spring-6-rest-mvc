@@ -144,7 +144,6 @@ class BeerControllerIT {
 
     @Test
     void testNoAuth() throws Exception {
-
             mockMvc.perform(get(BeerController.BEER_PATH)
                             .queryParam("beerStyle", BeerStyle.IPA.name())
                             .queryParam("pageSize", "800"))
