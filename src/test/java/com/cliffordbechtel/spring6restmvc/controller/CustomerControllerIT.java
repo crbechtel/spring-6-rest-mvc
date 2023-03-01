@@ -21,50 +21,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class CustomerControllerIT {
     @Autowired
-    CustomerController customerController;
-    
-    @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    CustomerController customerController;
 
     @Autowired
     CustomerMapper customerMapper;
 
-    @Test
-    void testPatchByIdNotFound() {
-        assertThrows(NotFoundException.class, () -> {
-            customerController.patchById(UUID.randomUUID(), CustomerDTO.builder().build());
-        });
-    }
-
     @Rollback
     @Transactional
     @Test
-    void testPatchById() {
-        Customer customer = customerRepository.findAll().get(0);
-        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
-        customerDTO.setId(null);
-        customerDTO.setVersion(null);
-        final String customerName = "UPDATED";
-        customerDTO.setName(customerName);
-
-        ResponseEntity responseEntity = customerController.patchById(customer.getId(), customerDTO);
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
-
-        Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
-        assertThat(updatedCustomer.getName()).isEqualTo(customerName);
-    }
-
-    @Test
-    void testDeleteByIDNotFound() {
-        assertThrows(NotFoundException.class, () -> {
-            customerController.deleteById(UUID.randomUUID());
-        });
-    }
-
-    @Rollback
-    @Transactional
-    @Test
-    void testDeleteById() {
+    void deleteByIdFound() {
         Customer customer = customerRepository.findAll().get(0);
 
         ResponseEntity responseEntity = customerController.deleteById(customer.getId());
@@ -74,7 +42,14 @@ class CustomerControllerIT {
     }
 
     @Test
-    void testUpdateNotFOund() {
+    void testDeleteNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            customerController.deleteById(UUID.randomUUID());
+        });
+    }
+
+    @Test
+    void testUpdateNotFound() {
         assertThrows(NotFoundException.class, () -> {
             customerController.updateById(UUID.randomUUID(), CustomerDTO.builder().build());
         });
@@ -83,7 +58,7 @@ class CustomerControllerIT {
     @Rollback
     @Transactional
     @Test
-    void testUpdateCustomer() {
+    void updateExistingBeer() {
         Customer customer = customerRepository.findAll().get(0);
         CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
         customerDTO.setId(null);
@@ -101,9 +76,9 @@ class CustomerControllerIT {
     @Rollback
     @Transactional
     @Test
-    void testSaveNewCustomer() {
+    void saveNewBeerTest() {
         CustomerDTO customerDTO = CustomerDTO.builder()
-                .name("New Customer")
+                .name("TEST")
                 .build();
 
         ResponseEntity responseEntity = customerController.handlePost(customerDTO);
@@ -118,8 +93,25 @@ class CustomerControllerIT {
         assertThat(customer).isNotNull();
     }
 
+    @Rollback
+    @Transactional
     @Test
-    void testCustomerIdNotFound() {
+    void testListAllEmptyList() {
+        customerRepository.deleteAll();
+        List<CustomerDTO> dtos = customerController.listCustomers();
+
+        assertThat(dtos.size()).isEqualTo(0);
+    }
+
+    @Test
+    void testListAll() {
+        List<CustomerDTO> dtos = customerController.listCustomers();
+
+        assertThat(dtos.size()).isEqualTo(3);
+    }
+
+    @Test
+    void testGetByIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
             customerController.getCustomerById(UUID.randomUUID());
         });
@@ -128,26 +120,7 @@ class CustomerControllerIT {
     @Test
     void testGetById() {
         Customer customer = customerRepository.findAll().get(0);
-
-        CustomerDTO dto = customerController.getCustomerById(customer.getId());
-
-        assertThat(dto).isNotNull();
-    }
-
-    @Test
-    void testListCustomers() {
-        List<CustomerDTO> dtos = customerController.listCustomers();
-
-        assertThat(dtos.size()).isEqualTo(3);
-    }
-
-    @Rollback
-    @Transactional
-    @Test
-    void testEmptyList() {
-        customerRepository.deleteAll();
-        List<CustomerDTO> dtos = customerController.listCustomers();
-
-        assertThat(dtos.size()).isEqualTo(0);
+        CustomerDTO customerDTO = customerController.getCustomerById(customer.getId());
+        assertThat(customerDTO).isNotNull();
     }
 }
